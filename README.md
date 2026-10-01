@@ -2,7 +2,9 @@
 
 A .NET 10 Web API for small sailing clubs on Michigan lakes. Members reserve club boats, skippers recruit crew, everyone files float plans, and the API enforces safety and access rules, some of which depend on live wind and wave conditions from NOAA.
 
-> **Status:** Requirements and early development. Sections marked **TBD** are open for decision.
+> **Status:** Being built step by step as a learning project. See the [learning plan](docs/learningPlan.md) for progress.
+>
+> Sections 1–8 are the requirements: what the finished API must do. Sections 9 and 12 describe the **target design**, not the current code. Sections 10, 11 and 13 describe only what works **today** and grow as each lesson is completed. Items marked **TBD** are open for decision.
 
 ---
 
@@ -215,6 +217,8 @@ Default limits (TBD, to be confirmed with the club):
 
 ## 9. Architecture
 
+> **Target design.** The project starts as a single project and is refactored into these layers in Lesson 20, once the reasons for them have been felt firsthand.
+
 Layered (Clean Architecture). Dependencies point inward: Api → Application → Domain. Infrastructure implements interfaces defined in Application.
 
 ```
@@ -260,14 +264,16 @@ Install these on any development machine (Windows, macOS, or Linux).
 | Git | Current | `git --version` | https://git-scm.com/downloads |
 | Visual Studio Code | Current | `code --version` | https://code.visualstudio.com/ |
 
-**VS Code extensions** (recommended automatically via `.vscode/extensions.json`)
+Docker isn't needed until Lesson 12; the early lessons use SQLite, a database stored in a single file.
+
+**VS Code extensions**
 
 - C# Dev Kit (`ms-dotnettools.csdevkit`)
 - Container Tools (`ms-azuretools.vscode-containers`)
 - PostgreSQL (`ms-ossdata.vscode-pgsql`)
 - REST Client (`humao.rest-client`)
 
-`dotnet-ef` does **not** need a global install. It's restored from the repo's local tool manifest (see below).
+`dotnet-ef` will not need a global install. When EF Core is added (Lesson 9), it will be pinned in a local tool manifest, `dotnet-tools.json`, in the repo root, and restored with `dotnet tool restore`.
 
 ---
 
