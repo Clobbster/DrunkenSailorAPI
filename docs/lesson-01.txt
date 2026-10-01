@@ -1,0 +1,56 @@
+1. What status code and Content-Type did each request in Exercise 4 return? Was any of them surprising?  
+  a. Returned 'no URL specified' which is interesting to me because the URL seems to be there from my pov. Answer: Windows PowerShell silently drops empty strings and used the URL as the User-Agent value. 403 Forbidden should now return.
+  b. Returned 404 Not Found
+  c. Returned 404 Not Found; detail: ... is not a valid resource path
+  d. Returned Connection: close. Bad Request. Your browser sent a request that this server could not understand. Answer: The use case should've shown 405 Method Not Allowed. However the server in front of the API rejected the request.. It never even reached the API.
+
+
+
+2. Why do you think NWS requires a User-Agent header?
+I imagine that it is for tracking and rbac. Answer: Tracking yes. RBAC, no. But it does allow the api to identify and take actions against identities as required. 
+
+
+
+3. The points response links to the forecast URL instead of making you build it. What's one advantage of that for the API's owners?
+It is expedient but also ensures that a given consumer doesn't have to fiddle about blind trying to find an endpoint which would make consumption difficult and time consuming. Answer: Correct, and the URL structure can change without breaking anyone consuming the api.
+
+
+
+4. Write three endpoints for boats in your API, using a method and URL for each: list all boats, get one boat, and add a boat. What status code should "get a boat that doesn't exist" return?
+
+  a. I'm not sure what the list, get, post code should look like yet. I've built a small json snippet that should plug into the overall api return. The format is probably      incorrect currently.
+    BoatType: [
+              Motorboats,
+              Sailboats,
+              Human-Powered-Boats
+              ]
+
+
+  b. If a boat that doesn't exist is queried, the api should return a 404 boat type doesn't exist.
+
+Answer: The question asks ABOUT boats like a j/24 named Wet Noodle. Types will become a property of a boat.
+ex: {
+    "id": 42,
+    "name": "Wet Noodle",
+    "type": "Sailboat",
+    "lengthFt": 24,
+    "capacity": 4,
+    "inService": true
+    }
+
+
+Action,	Request,	Success response
+List all boats,	GET /boats,	200 with an array of boats
+Get one boat,	GET /boats/42,	200 with that boat
+Add a boat,	POST /boats with the boat JSON as the body,	201 Created with a Location: /boats/43 header
+
+
+5. A reservation is denied by the certification gate. Is that a 4xx or a 5xx? Which specific code would you pick, and why?
+It should be a 404 because it won't be that the server can't serve a response or is otherwise broken, but rather that there is an issue with protocol fact that an individual would need to be properly certified. 
+
+Answer: The 4xx is correct, but the 404 is not right because both the both and reservation slot exist and a 404 would send the wrong message 'there is nothing here' which is untrue. 
+400 Bad Request,	The request is malformed,	End time before start time
+401 Unauthorized,	We don't know who you are,	No login token
+403 Forbidden,	We know who you are, and you're not allowed,	Not certified for this boat
+404 Not Found,	That thing doesn't exist,	Boat 999
+409 Conflict,	It clashes with the current state	Boat already booked for that window
