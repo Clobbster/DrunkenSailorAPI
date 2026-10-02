@@ -275,6 +275,8 @@ Docker isn't needed until Lesson 12; the early lessons use SQLite, a database st
 
 `dotnet-ef` will not need a global install. When EF Core is added (Lesson 9), it will be pinned in a local tool manifest, `dotnet-tools.json`, in the repo root, and restored with `dotnet tool restore`.
 
+'global.json' pins the SDK, so 'dotnet --version' run inside the repo will show the proper version.
+
 ---
 
 ## 11. Getting started
