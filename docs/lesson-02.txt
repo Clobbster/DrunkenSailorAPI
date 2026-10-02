@@ -1,0 +1,25 @@
+The map: .NET in terms you know
+
+.NET,	                         Python,	                    JavaScript
+SDK (compiler, CLI, templates),	 Python + pip + build tools,	Node + npm
+Runtime (runs compiled code),	 The Python interpreter,	    Node itself
+dotnet CLI,	                     python / pip,	                node / npm
+.csproj,	                     pyproject.toml,	            package.json
+NuGet,	                         PyPI / pip,	                npm registry
+global.json,	                 .python-version,	            .nvmrc
+bin/ and obj/,	                 __pycache__/, dist/,	        dist/, build output
+
+What's the difference between the SDK and the runtime? Which one would a production server need?
+I believe that the runtime is for running .NET while the SDK is for development. Therefore the production server would need the runtime specifically.
+
+Where did Humanizer get downloaded, and how is that different from node_modules?
+The Huminzer package is stored in the Global Package Cache instead of in the project folder. This means a package only needs to be downloaded once thereby keeping projects smaller.
+
+When you removed the semicolon, when did you find out compared to how Python would have behaved? Why might that matter for an API?
+I received a build error. This would have happened at runtime in python. This allows one to know that, at runtime, the program will function because errors can be caught at buildtime. 
+
+What error did global.json give you with 9.0.100? What would "rollForward": "disable" do?
+Basically, I received an error stating that the installed SDK doesn't match the requested SDK version. I believe that if you disabled roll forward that even new minor versions would be incompatible and likely result in an error.
+
+Why should bin/ and obj/ never be committed?
+Because they contain temporary build artifacts that are auto generated and machine specific. There are also security concerns I believe.
