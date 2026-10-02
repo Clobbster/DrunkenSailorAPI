@@ -1,0 +1,21 @@
+1. What are the two phases of Program.cs? Guess which phase "connect to the database" belongs in, and which one "add a /reservations route" belongs in.
+  The two phases are before builder and after builder. I believe that connecting to a db belongs in phase 1 or 'before' builder. Phase 2 defines what happens to requests and the routes they take so /reservations route belongs in phase 2.
+
+2. What Content-Type did / return, and what did /health return? Why are they different when you never set either one?
+  1. text/plain was the content type for /
+  2. application/json was the content type for /health
+  Content type seems to instruct how the receiver client parses the response payload. Text plain, is text and human readable similar to a .txt document. Application JSON is structered into arrays.
+
+  Answer: Correct on part 1. 
+          Part2: They are different because the framework decided based on what the lambda returned. 
+
+3. What status did /boats/banana return? NWS returned 404 for /points/banana. Which choice do you think is better, and why?
+  I receieved a 400 Bad Request. I wouldn't say one is necessarily better than the other unless one is used in lieu of another incorrectly. If /boats/x exists as an endpoint then a bad request is proper for a non existent boat. Not found I think should be most suitable to routes which is what I received via /nope
+
+  Answer: 404 is used for routes but also, 'valid request, nothing there' so it still has a place for this particular use case.
+
+4. Compare the result of 5c with what NWS did in Lesson 1's Exercise 4d.
+  I received a method not allowed which means the request made it to the api and was processed rather than being caught prior to hitting the api.
+
+5. What happened in 5d? Why is there no status code?
+  There is no status code because the server doesn't appear to exist at all. There must be a server to serve/service communications with the distant end, even errors. That is why there wasn't an error code thrown.

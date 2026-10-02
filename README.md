@@ -275,138 +275,102 @@ Docker isn't needed until Lesson 12; the early lessons use SQLite, a database st
 
 `dotnet-ef` will not need a global install. When EF Core is added (Lesson 9), it will be pinned in a local tool manifest, `dotnet-tools.json`, in the repo root, and restored with `dotnet tool restore`.
 
-'global.json' pins the SDK, so 'dotnet --version' run inside the repo will show the proper version.
+`global.json` pins the SDK, so `dotnet --version` run inside the repo will show the proper version.
 
 ---
 
 ## 11. Getting started
+
+> This section describes only what works today. Each lesson adds the steps it makes real.
 
 ```bash
 # 1. Clone
 git clone https://github.com/<your-github-username>/DrunkenSailorAPI.git
 cd DrunkenSailorAPI
 
-# 2. Restore pinned local tools (dotnet-ef)
-dotnet tool restore
-
-# 3. Start PostgreSQL
-docker compose up -d
-
-# 4. Set the connection string (stored outside the repo)
-dotnet user-secrets --project src/SailClub.Api set "ConnectionStrings:SailClub" "Host=localhost;Port=5432;Database=sailclub;Username=sailclub;Password=devpass"
-
-# 5. Create the database schema
-dotnet ef database update --project src/SailClub.Infrastructure --startup-project src/SailClub.Api
-
-# 6. Run
-dotnet run --project src/SailClub.Api
+# 2. Run the API
+dotnet run --project src/DrunkenSailor.Api
 ```
 
-Open the Scalar UI at `http://localhost:<port>/scalar` (the port is in `src/SailClub.Api/Properties/launchSettings.json`).
+The API listens on `http://localhost:5080` (set in `src/DrunkenSailor.Api/Properties/launchSettings.json`). Stop it with Ctrl+C.
 
-### Portability files
+Endpoints so far:
 
-These files live in the repo so every machine gets the same setup.
+| Request | Returns |
+|---|---|
+| `GET /` | A plain-text greeting |
+| `GET /health` | JSON with a status and the current UTC time |
+| `GET /boats/{id}` | Plain text echoing the boat id (placeholder until Lesson 4) |
+| `GET /greet?name=...` | A plain-text greeting; `name` is optional |
 
-**`global.json`** pins the SDK:
-
-```json
-{
-  "sdk": {
-    "version": "10.0.100",
-    "rollForward": "latestFeature"
-  }
-}
-```
-
-**`.config/dotnet-tools.json`** pins `dotnet-ef`. Create it once with:
-
-```bash
-dotnet new tool-manifest
-dotnet tool install dotnet-ef
-```
-
-**`docker-compose.yml`** runs the database:
-
-```yaml
-services:
-  db:
-    image: postgres:17
-    container_name: sailclub-db
-    environment:
-      POSTGRES_DB: sailclub
-      POSTGRES_USER: sailclub
-      POSTGRES_PASSWORD: devpass
-    ports:
-      - "5432:5432"
-    volumes:
-      - sailclub-data:/var/lib/postgresql/data
-
-volumes:
-  sailclub-data:
-```
-
-**`.vscode/extensions.json`** prompts teammates to install the right extensions:
-
-```json
-{
-  "recommendations": [
-    "ms-dotnettools.csdevkit",
-    "ms-azuretools.vscode-containers",
-    "ms-ossdata.vscode-pgsql",
-    "humao.rest-client"
-  ]
-}
-```
-
-**`.gitignore`**: generate with `dotnet new gitignore`.
-
-> The `devpass` password is for local development only. Never reuse it in a deployed environment.
+To try them, open `src/DrunkenSailor.Api/requests.http` in VS Code with the REST Client extension and click "Send Request", or use `curl.exe -i http://localhost:5080/health`.
 
 ---
 
 ## 12. Project structure
 
+### Today
+
 ```
 DrunkenSailorAPI/
-├── .config/dotnet-tools.json
+├── .gitignore                                      ignores build output (bin/, obj/)
+├── DrunkenSailorAPI.slnx                           solution file
+├── global.json                                     pins the .NET SDK version
+├── README.md                                       requirements and design (this file)
+├── drunken_sailor_domain_uml_class_diagram.html    domain model UML diagram
+├── docs/
+│   ├── learningPlan.md                             lesson-by-lesson plan
+│   └── lesson-NN.txt, lesson-NN.ps1                notes and commands from each lesson
+└── src/
+    └── DrunkenSailor.Api/
+        ├── DrunkenSailor.Api.csproj
+        ├── Program.cs                              the whole application, for now
+        ├── appsettings.json
+        ├── appsettings.Development.json
+        ├── requests.http                           saved test requests
+        └── Properties/launchSettings.json          local port and environment
+```
+
+### Target design
+
+Where the project is heading after the Lesson 20 refactor. Files appear as the lessons that need them are completed.
+
+```
+DrunkenSailorAPI/
 ├── .vscode/extensions.json
 ├── docker-compose.yml
+├── dotnet-tools.json
 ├── global.json
-├── SailClub.slnx
+├── DrunkenSailorAPI.slnx
 ├── README.md
-├── docs/                          requirements, diagrams, decisions
+├── docs/                               learning plan, requirements, diagrams, decisions
 ├── src/
-│   ├── SailClub.Api/              controllers, DTOs, auth setup, Program.cs
+│   ├── DrunkenSailor.Api/              controllers, DTOs, auth setup, Program.cs
 │   │   └── requests.http
-│   ├── SailClub.Application/      services, policy engine, authorization, interfaces
-│   ├── SailClub.Domain/
-│   │   ├── Membership/            Club, ClubMembership, Member, Certification
-│   │   ├── Fleet/                 Boat, Reservation, CrewRequest
-│   │   ├── Safety/                FloatPlan, CheckIn, Incident, FleetClosure
-│   │   ├── Policies/              IReservationPolicy, PolicyResult
-│   │   └── Conditions/            Forecast, BuoyReading
-│   └── SailClub.Infrastructure/   AppDbContext, migrations, weather client, background jobs
+│   ├── DrunkenSailor.Application/      services, policy engine, authorization, interfaces
+│   ├── DrunkenSailor.Domain/
+│   │   ├── Membership/                 Club, ClubMembership, Member, Certification
+│   │   ├── Fleet/                      Boat, Reservation, CrewRequest
+│   │   ├── Safety/                     FloatPlan, CheckIn, Incident, FleetClosure
+│   │   ├── Policies/                   IReservationPolicy, PolicyResult
+│   │   └── Conditions/                 Forecast, BuoyReading
+│   └── DrunkenSailor.Infrastructure/   AppDbContext, migrations, weather client, background jobs
 └── tests/
-    ├── SailClub.UnitTests/        domain and policy tests
-    └── SailClub.IntegrationTests/ API tests with Testcontainers
+    ├── DrunkenSailor.UnitTests/        domain and policy tests
+    └── DrunkenSailor.IntegrationTests/ API tests with Testcontainers
 ```
 
 ---
 
 ## 13. Common commands
 
-| Task | Command |
-|---|---|
-| Build | `dotnet build` |
-| Run API | `dotnet run --project src/SailClub.Api` |
-| Run with hot reload | `dotnet watch --project src/SailClub.Api` |
-| Run tests | `dotnet test` |
-| Add a migration | `dotnet ef migrations add <Name> --project src/SailClub.Infrastructure --startup-project src/SailClub.Api` |
-| Apply migrations | `dotnet ef database update --project src/SailClub.Infrastructure --startup-project src/SailClub.Api` |
-| Start database | `docker compose up -d` |
-| Stop database | `docker compose down` |
-| Reset database (deletes data) | `docker compose down -v` |
+> Commands are added here as the lessons introduce them.
+
+| Task | Command | Added in |
+|---|---|---|
+| Check the pinned SDK version | `dotnet --version` | Lesson 2 |
+| Run the API | `dotnet run --project src/DrunkenSailor.Api` | Lesson 3 |
+| Run with hot reload | `dotnet watch --project src/DrunkenSailor.Api` | Lesson 3 |
 
 ---
 
