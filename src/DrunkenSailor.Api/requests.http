@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:5080
+
+### Root
+GET {{baseUrl}}/
+
+### Health
+GET {{baseUrl}}/health
+
+### One boat
+GET {{baseUrl}}/boats/42
+
+### Greeting
+GET {{baseUrl}}/greet?name=Christian

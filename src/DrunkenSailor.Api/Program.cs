@@ -11,6 +11,8 @@ app.MapGet("/", () => "Hello World!");
 // Initial endpoints for health check and basic route testing.
 app.MapGet("/health", () => new { status = "ok", time = DateTime.UtcNow });
 app.MapGet("/boats/{id}", (int id) => $"You asked for boat {id}");
+
+// Initial query parameter example.
 app.MapGet("/greet", (string? name) => $"Ahoy, {name ?? "sailor"}!");
 
 
