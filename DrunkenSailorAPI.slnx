@@ -1,4 +1,4 @@
-git s<Solution>
+<Solution>
   <Folder Name="/src/">
     <Project Path="src/DrunkenSailor.Api/DrunkenSailor.Api.csproj" />
   </Folder>

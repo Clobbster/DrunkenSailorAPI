@@ -300,8 +300,12 @@ Endpoints so far:
 |---|---|
 | `GET /` | A plain-text greeting |
 | `GET /health` | JSON with a status and the current UTC time |
-| `GET /boats/{id}` | Plain text echoing the boat id (placeholder until Lesson 4) |
+| `GET /boats` | `200` with a JSON array of all boats |
+| `GET /boats?type=...&inService=...` | `200` with the boats that match; an empty array if none do. Both filters are optional. `type` is `Sailboat`, `Motorboat` or `HumanPowered` (case-sensitive); `inService` is `true` or `false`. An unrecognized value returns `400` |
+| `GET /boats/{id}` | `200` with one boat, `404` if no boat has that id, `400` if the id isn't a number |
 | `GET /greet?name=...` | A plain-text greeting; `name` is optional |
+
+The fleet is five sample boats held in memory (defined in `Program.cs`). They are created each time the server starts; a database arrives in Lesson 9.
 
 To try them, open `src/DrunkenSailor.Api/requests.http` in VS Code with the REST Client extension and click "Send Request", or use `curl.exe -i http://localhost:5080/health`.
 
@@ -324,7 +328,10 @@ DrunkenSailorAPI/
 └── src/
     └── DrunkenSailor.Api/
         ├── DrunkenSailor.Api.csproj
-        ├── Program.cs                              the whole application, for now
+        ├── Program.cs                              routes, JSON settings, and the sample fleet
+        ├── Domain/
+        │   ├── Boat.cs                             the Boat class
+        │   └── BoatType.cs                         Sailboat, Motorboat, HumanPowered
         ├── appsettings.json
         ├── appsettings.Development.json
         ├── requests.http                           saved test requests
@@ -369,8 +376,11 @@ DrunkenSailorAPI/
 | Task | Command | Added in |
 |---|---|---|
 | Check the pinned SDK version | `dotnet --version` | Lesson 2 |
+| Build without running | `dotnet build` | Lesson 4 |
 | Run the API | `dotnet run --project src/DrunkenSailor.Api` | Lesson 3 |
 | Run with hot reload | `dotnet watch --project src/DrunkenSailor.Api` | Lesson 3 |
+
+When running with `dotnet watch`, press Ctrl+R to restart after adding or changing a route. Hot reload updates the code inside an existing endpoint, but routes are only registered at startup.
 
 ---
 

@@ -1,0 +1,20 @@
+1. What did warning CS8618 say, and what mistake was the compiler protecting you from?
+  The compiler is ensuring that properties that are expected to exist for entries will not be null. It creates a more well defined and maintainable api for both devs and consumers.
+
+2. What does FirstOrDefault return when nothing matches? Why couldn't the lambda return a Boat on one branch and Results.NotFound(...) on the other?
+  It will return in this case, the first boat with a matching id or will default to null. I don't understand the second question.. unless the lambda is defined differently branch to branch, which would be terrible design, the expected behavior is that it will return appropriately on all branches.
+
+  Answer: You skipped the break it step in exercise 4. C# requires every function to have one return type, so it refuses to compile. 
+
+3. How did type appear in the JSON before Exercise 5? Give one reason that's a bad contract for someone using your API.
+  Returning the enumerated number doesn't provide any immediately useful data to the consumer. Consumers expect a boat type like Catamaran, or Sailboat in this case. Returning boat type 1 wouldn't help a user who is expecting a boat type but received a number instead.
+
+4. Why did the JSON line go before builder.Build() instead of after?
+  Because this particular service is just that and doesn't define how requests are routed or handled.
+
+5. What status did /boats?type=banana return, and what did /boats?type=sailboat (lowercase) do? What does /boats?type=Motorboat&inService=false return, and is that an error?
+  a. It returns a 400 bad request.
+  b. It returns a 400 bad request as well. This is due to the fact that 'Sailboat' is what is defined in BoatType.cs rather than 'sailboat' and there would need to be code to handle this common lowercase input error. I don't think that the error returns enough information to the user however. I would like to either update the error to reflect capitalization requirements or create a means to handle this particular test case.
+  c. It returns the first two defined boats that have the in service property set to true. I believe that the return isn't a error necessarilly but that it stops returning or exits the request at the first not true property which gives incomplete and faulty data to the consumer.
+
+  Answer 5c: Each boat was analyzed, but Sailboats being in the request, only sailboats matched the query. 
