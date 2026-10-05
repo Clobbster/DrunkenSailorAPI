@@ -46,7 +46,7 @@ app.MapGet("/greet", (string? name) => $"Ahoy, {name ?? "sailor"}!");
 // Create reference function for boats and make available via an endpoint.
 // app.MapGet("/boats", () => boats);
 
-// Second iteration with query parameter filtering for boats.
+// Second iteration with query parameter for boat type and in-service status.
 app.MapGet("/boats", (BoatType? type, bool? inService) =>
 {
     IEnumerable<Boat> result = boats;

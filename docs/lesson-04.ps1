@@ -23,10 +23,66 @@ public enum BoatType
 #>
 
 
-
 # Return test cases for new app.MapGet /boats route
 curl.exe -i "http://localhost:5080/boats?type=Sailboat"
 curl.exe -i "http://localhost:5080/boats?inService=false"
 curl.exe -i "http://localhost:5080/boats?type=Sailboat&inService=true"
 curl.exe -i "http://localhost:5080/boats?type=sailboat"
 curl.exe -i "http://localhost:5080/boats?type=banana"
+
+
+# Rewrite app.MapGet /boats/{id} as a powershell function without lambda for reference
+function Get-BoatById {
+    param([int]$Id)
+
+    # Look through the boats for the first one whose Id matches
+    $boat = $null
+    foreach ($b in $boats) {
+        if ($b.Id -eq $Id) {
+            $boat = $b
+            break
+        }
+    }
+
+    # Decide what to send back
+    if ($null -eq $boat) {
+        return @{ Status = 404; Body = @{ message = "Boat $Id not found" } }
+    }
+    else {
+        return @{ Status = 200; Body = $boat }
+    }
+}
+
+
+
+# Rewrite app.MapGet /boats as a powershell function without lambda for reference
+function Get-Boats {
+    param($Type = $null, $InService = $null)
+
+    # Start with every boat
+    $result = $boats
+
+    # If a type was given, keep only the boats of that type
+    if ($null -ne $Type) {
+        $kept = @()
+        foreach ($b in $result) {
+            if ($b.Type -eq $Type) {
+                $kept += $b
+            }
+        }
+        $result = $kept
+    }
+
+    # If inService was given, keep only the boats that match it
+    if ($null -ne $InService) {
+        $kept = @()
+        foreach ($b in $result) {
+            if ($b.InService -eq $InService) {
+                $kept += $b
+            }
+        }
+        $result = $kept
+    }
+
+    return $result
+}
