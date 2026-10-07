@@ -1,13 +1,65 @@
 @baseUrl = http://localhost:5080
 
+
+########
+# GETS #
+########
 ### Root
 GET {{baseUrl}}/
 
 ### Health
 GET {{baseUrl}}/health
 
+### All boats
+GET {{baseUrl}}/boats
+
+### Sailboats in service
+GET {{baseUrl}}/boats?type=Sailboat&inService=true
+
 ### One boat
-GET {{baseUrl}}/boats/42
+GET {{baseUrl}}/boats/2
 
 ### Greeting
 GET {{baseUrl}}/greet?name=Christian
+
+
+#########
+# POSTS #
+#########
+
+### Add a boat
+POST {{baseUrl}}/boats
+Content-Type: application/json
+
+{
+  "name": "Sea You Later",
+  "type": "Sailboat",
+  "lengthFt": 22,
+  "capacity": 4,
+  "inService": true
+}
+
+
+########
+# PUTS #
+########
+
+### Replace boat 3
+PUT {{baseUrl}}/boats/3
+Content-Type: application/json
+
+{
+  "name": "Knot Today",
+  "type": "Sailboat",
+  "lengthFt": 30,
+  "capacity": 6,
+  "inService": true
+}
+
+
+###########
+# DELETES #
+###########
+
+### Delete boat 5
+DELETE {{baseUrl}}/boats/5

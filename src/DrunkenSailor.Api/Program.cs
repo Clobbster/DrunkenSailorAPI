@@ -22,6 +22,8 @@ var boats = new List<Boat>
     new Boat { Id = 5, Name = "Paddle Faster", Type = BoatType.HumanPowered, LengthFt = 12, Capacity = 1, InService = true }
 };
 
+var nextId = 6;
+
 
 // C# lamba example & hello world.
 app.MapGet("/", () => "Hello World!");
@@ -46,6 +48,7 @@ app.MapGet("/greet", (string? name) => $"Ahoy, {name ?? "sailor"}!");
 // Create reference function for boats and make available via an endpoint.
 // app.MapGet("/boats", () => boats);
 
+
 // Second iteration with query parameter for boat type and in-service status.
 app.MapGet("/boats", (BoatType? type, bool? inService) =>
 {
@@ -59,6 +62,45 @@ app.MapGet("/boats", (BoatType? type, bool? inService) =>
 
     return result;
 }); 
+
+
+app.MapPost("/boats", (Boat boat) =>
+{
+    boat.Id = nextId++;
+    boats.Add(boat);
+
+    return Results.Created($"/boats/{boat.Id}", boat);
+});
+
+
+app.MapPut("/boats/{id}", (int id, Boat updated) =>
+{
+    var boat = boats.FirstOrDefault(b => b.Id == id);
+
+    if (boat is null)
+        return Results.NotFound(new { message = $"Boat {id} not found" });
+
+    boat.Name = updated.Name;
+    boat.Type = updated.Type;
+    boat.LengthFt = updated.LengthFt;
+    boat.Capacity = updated.Capacity;
+    boat.InService = updated.InService;
+
+    return Results.Ok(boat);
+});
+
+
+app.MapDelete("/boats/{id}", (int id) =>
+{
+    var boat = boats.FirstOrDefault(b => b.Id == id);
+
+    if (boat is null)
+        return Results.NotFound(new { message = $"Boat {id} not found" });
+
+    boats.Remove(boat);
+
+    return Results.NoContent();
+});
 
 
 app.Run();
