@@ -1,5 +1,9 @@
 namespace DrunkenSailor.Api.Domain;
 
+
+// We probably want to behavior-rich domain model here. 
+// Custom domain exception
+// Encapsulate a rule
 public class Boat
 {
     public int Id { get; set; }

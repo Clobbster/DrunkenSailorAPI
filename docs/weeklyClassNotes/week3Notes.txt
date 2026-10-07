@@ -1,0 +1,8 @@
+// Research value objects. This simply reinforces valid entries and/or carries meaning.
+// Research Entities. Why might you have 2 objects that are the same... You might have a consumer that orders the same book on the same day for the same price but the orders are different entities.
+// Research Agregate roots...A Special kind of entity that manages other entities. A character may/not be able to equip a particular weapon, those equipment rules are defined at the 'aggregate root'
+// Research class based enumerations. Standard C# enumerations are primitive, or not as good as class based enumerations according to Chris. 
+// By what rule of thumb do you decide what gets passed to the service vs the domain model? Service comes into play when you have 2 aggregate roots interacting as one example.
+// Research richer enumeration over if then statement. 
+// Rule violations should use domain language and fail close to the cause. 
+// One needs to seperate validation from instantiation so that one can rehydrate appropriately. 

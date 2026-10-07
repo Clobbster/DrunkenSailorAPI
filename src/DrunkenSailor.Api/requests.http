@@ -4,6 +4,7 @@
 ########
 # GETS #
 ########
+
 ### Root
 GET {{baseUrl}}/
 
