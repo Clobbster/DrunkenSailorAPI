@@ -66,7 +66,7 @@ app.MapGet("/boats", (BoatType? type, bool? inService) =>
 
 app.MapPost("/boats", (Boat boat) =>
 {
-    boat.Id = nextId++;
+    boat.Id = nextId++;  // was: boat.Id = boats.Max(b => b.Id) + 1;
     boats.Add(boat);
 
     return Results.Created($"/boats/{boat.Id}", boat);
