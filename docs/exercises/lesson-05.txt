@@ -1,19 +1,31 @@
-What did the Location header contain after the POST? How does it relate to what NWS did with the forecast URL in Lesson 1?
+1. What did the Location header contain after the POST? How does it relate to what NWS did with the forecast URL in Lesson 1?
   Location: /boats/6. I'm not sure how it relates as lesson 1 was days ago and obscure now.
 
-In break-it 4, what id did the boat get, and why should the server choose it? Name one other Boat field a caller probably shouldn’t be allowed to set freely.
+  Answer: The location return in both the post and the NWS exercise point to the location of the boat and point. 
+
+2. In break-it 4, what id did the boat get, and why should the server choose it? Name one other Boat field a caller probably shouldn’t be allowed to set freely.
   The boat received id 9 instead of 999. I don't know why the server should choose it specifically. I don't think that capacity or lengthFt should be able to be set freely.. What I mean to say is, I think that we need to relegate user access and the manner in which individuals can interact with posts and puts. Furthermore, I think that there should be some definitions or validations built into the api posts/puts.
 
-From Exercise 5: what happened to the fleet when you repeated the POST, and when you repeated the PUT? Which is safe to retry?
+  Answer: Only the server knows which ids are taken. NOTE: LOL!
+
+3. From Exercise 5: what happened to the fleet when you repeated the POST, and when you repeated the PUT? Which is safe to retry?
   When I added a new boat twice, two seperate boats were created. Replacing/updating a boat, updated in place. Therefore, I believe that updating entries are somewhat safe to be tried multiple times but I believe a built in feature printing what is to be updated and asking the user if they are certain that an update or new entry is correct and should be placed.
 
-What status codes did break-its 1, 3, and 7 return? For 7, the second DELETE gave a different answer from the first. Is that reasonable?
+  Answer: Correct, PUT is idempotent
+
+4. What status codes did break-its 1, 3, and 7 return? For 7, the second DELETE gave a different answer from the first. Is that reasonable?
     1. 400 Bad request
     3. 415 Unsupported Media Type 
     7. 204 the first time, 404 Not found the second time. The answer is resonable because the entry to delete has already been removed.
 
-What happened with "capacity": -3? What should happen?
+  Answer: All correct
+
+5. What happened with "capacity": -3? What should happen?
   The entry was allowed but this should be a caught exception with a proper error displayed.
 
-What caused the 500 in Exercise 7? Using the table from Lesson 1, whose fault is a 5xx, and how does that differ from every other error you produced today?
+  Answer: Correct, but exceptions shouldn't happen at all. Bad input is something the API should expect and handle as validation.
+
+6. What caused the 500 in Exercise 7? Using the table from Lesson 1, whose fault is a 5xx, and how does that differ from every other error you produced today?
   I'm not sure. Looking at the code that I used and getting all boats returned an expected result of a new boat properly id'd and in the correct place.
+
+  Answer: You didn't get a 500, so the server never hit the problem. Boats.Max(...) only fails when the list is empty because there's no highest id among zero boats.. All boats were to be deleted.
